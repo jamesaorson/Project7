@@ -16,6 +16,8 @@ import java.util.Random;
   *     testing most or all edge cases, more testing needed for confidence.
   *     16 Nov 2016 - JAO - Fixed some efficiency and arbitrary checking issues
   *     within the bubbleUp() method.
+  *     28 Nov 2016 - JAO - Changed main testing to 10000 element insertion
+  *     and removal, checking prevKey against current Item's key.
   * 
   * Description: This ArrayHeap uses an array to store Item objects, having a 
   * key and a value. The purpose of this implementation is to show how an array
@@ -33,40 +35,6 @@ public class ArrayHeap extends ArrayBinaryTree implements Heap {
     public ArrayHeap(Comparator newComp, int newSize) {
         super (newSize);
         heapComp = newComp;
-    }
-    
-    // you may want to expand main; it is just provided as a sample
-    public static void main (String[] args) {
-	Comparator myComp = new IntegerComparator();
-        Heap myHeap = new ArrayHeap (myComp, 8);
-        int key;
-        int value;
-        Random random = new Random();
-        
-        for (int i = 0; i < 10000; ++i) {
-            key = random.nextInt(10000);
-            value = random.nextInt(10000);
-            
-            myHeap.add(new Integer(key), new Integer(value));
-        }
-
-        System.out.println(myHeap.size());
-        
-        Item removedItem;
-        int prevKey = -1;
-        
-        while (!myHeap.isEmpty()) {
-            removedItem = (Item) myHeap.removeRoot();
-            System.out.print("Key:   " + removedItem.key() + "\t");
-            System.out.println("Removed " + removedItem.element());
-            
-            if (prevKey > (int) removedItem.key()) {
-                System.out.println("Heap order not satisfied");
-                break;
-            }
-            
-            prevKey = (int) removedItem.key();
-        }
     }
 
     @Override
@@ -174,6 +142,7 @@ public class ArrayHeap extends ArrayBinaryTree implements Heap {
         ArrayPosition smallest = pos;
         ArrayPosition leftChild;
         ArrayPosition rightChild;
+        //Stored items separately for less m
         Item posItem;
         Item smallestItem;
         Item leftItem;
@@ -246,5 +215,38 @@ public class ArrayHeap extends ArrayBinaryTree implements Heap {
         
         item2.setKey(tempKey);
         item2.setElement(tempValue);
+    }
+    
+    public static void main (String[] args) {
+	Comparator myComp = new IntegerComparator();
+        Heap myHeap = new ArrayHeap (myComp, 8);
+        int key;
+        int value;
+        Random random = new Random();
+        
+        for (int i = 0; i < 10000; ++i) {
+            key = random.nextInt(10000);
+            value = random.nextInt(10000);
+            
+            myHeap.add(new Integer(key), new Integer(value));
+        }
+
+        System.out.println(myHeap.size());
+        
+        Item removedItem;
+        int prevKey = -1;
+        
+        while (!myHeap.isEmpty()) {
+            removedItem = (Item) myHeap.removeRoot();
+            System.out.print("Key:   " + removedItem.key() + "\t");
+            System.out.println("Removed " + removedItem.element());
+            
+            if (prevKey > (int) removedItem.key()) {
+                System.out.println("Heap order not satisfied");
+                break;
+            }
+            
+            prevKey = (int) removedItem.key();
+        }
     }
 }
